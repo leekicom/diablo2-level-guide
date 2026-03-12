@@ -1,5 +1,8 @@
 import streamlit as st
 import math
+import pandas as pd
+from datetime import datetime
+
 # 1. 페이지 설정
 st.set_page_config(page_title="멀티 가이드 앱", page_icon="📱", layout="wide")
 
@@ -45,23 +48,78 @@ if menu == "디아2 레벨 가이드":
 
 # --- 페이지 2: 삼성 라이온즈 일정 (2026 시범경기 가상 데이터) ---
 elif menu == "삼성 라이온즈 일정":
-    st.title("⚾ 2026 삼성 라이온즈 시범경기 일정")
-    st.info("사자들의 승리를 기원합니다! (예시 일정입니다)")
+    st.set_page_config(page_title="2026 삼성라이온즈 일정", page_icon="🦁", layout="wide")
 
     # 일정 데이터 (표 형식)
-    schedule_data = [
-        {"날짜": "2026-03-14", "상대": "LG 트윈스", "구장": "대구 삼성 라이온즈 파크", "시간": "13:00"},
-        {"날짜": "2026-03-15", "상대": "LG 트윈스", "구장": "대구 삼성 라이온즈 파크", "시간": "13:00"},
-        {"날짜": "2026-03-17", "상대": "KIA 타이거즈", "구장": "광주 챔피언스 필드", "시간": "13:00"},
-        {"날짜": "2026-03-18", "상대": "KIA 타이거즈", "구장": "광주 챔피언스 필드", "시간": "13:00"},
-        {"날짜": "2026-03-21", "상대": "두산 베어스", "구장": "대구 삼성 라이온즈 파크", "시간": "13:00"},
+# 2. 데이터 준비 (2026년 전체 일정 예시 데이터)
+# 실제 일정이 나오면 이 리스트만 업데이트하면 됩니다.
+    raw_data = [
+        {"날짜": "2026-03-24", "상대": "SSG", "장소": "문학", "시간": "18:30", "비고": "개막전"},
+        {"날짜": "2026-03-25", "상대": "SSG", "장소": "문학", "시간": "18:30", "비고": "-"},
+        {"날짜": "2026-03-27", "상대": "두산", "장소": "대구", "시간": "18:30", "비고": "홈개막"},
+        {"날짜": "2026-03-28", "상대": "두산", "장소": "대구", "시간": "17:00", "비고": "-"},
+        {"날짜": "2026-04-01", "상대": "LG", "장소": "잠실", "시간": "18:30", "비고": "-"},
+        {"날짜": "2026-04-07", "상대": "롯데", "장소": "대구", "시간": "18:30", "비고": "클래식시리즈"},
+        {"날짜": "2026-05-05", "상대": "NC", "장소": "대구", "시간": "14:00", "비고": "어린이날"},
+    # ... 더 많은 데이터를 추가할 수 있습니다.
     ]
 
-    # 데이터 프레임 형식으로 예쁘게 보여주기
-    st.table(schedule_data)
+    df = pd.DataFrame(raw_data)
+    df['날짜'] = pd.to_datetime(df['날짜'])
+    df['월'] = df['날짜'].dt.month
+    df['요일'] = df['날짜'].dt.day_name()
+
+# 3. 사이드바 - 월 선택 및 필터
+    st.sidebar.header("🦁 일정 필터")
+    selected_month = st.sidebar.selectbox("월 선택", [3, 4, 5, 6, 7, 8, 9, 10], index=0)
+    home_only = st.sidebar.checkbox("홈 경기(대구)만 보기")
+
+# 필터링 적용
+    filtered_df = df[df['월'] == selected_month]
+    if home_only:
+        filtered_df = filtered_df[filtered_df['장소'] == "대구"]
+
+# 4. 메인 화면 구성
+    st.title(f"🦁 2026 삼성 라이온즈 {selected_month}월 경기 일정")
+
+    if filtered_df.empty:
+        st.warning(f"등록된 {selected_month}월 경기가 없습니다.")
+    else:
+    # 달력 그리드 레이아웃 (한 줄에 7일이 아닌 경기일 순으로 카드 배치)
+        cols = st.columns(4) # 한 줄에 4경기씩 표시
     
-    st.markdown("---")
-    st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ") # 응원가 영상 등을 넣을 수 있어요!
+    for idx, row in enumerate(filtered_df.itertuples()):
+        with cols[idx % 4]:
+            # 홈/원정 디자인 차별화
+            is_home = row.장소 == "대구"
+            card_color = "#0056b3" if is_home else "#ffffff" # 삼성 블루 vs 화이트
+            text_color = "white" if is_home else "black"
+            border = "none" if is_home else "1px solid #ddd"
+            
+            st.markdown(f"""
+                <div style="background-color: {card_color}; color: {text_color}; padding: 20px; 
+                            border-radius: 15px; border: {border}; margin-bottom: 20px;
+                            box-shadow: 2px 2px 10px rgba(0,0,0,0.1); height: 180px;">
+                    <div style="font-size: 1.2em; font-weight: bold;">{row.날짜.strftime('%m.%d')} ({row.요일[:3]})</div>
+                    <hr style="margin: 10px 0; border-color: {text_color}; opacity: 0.3;">
+                    <div style="font-size: 1.5em; font-weight: 800; text-align: center;">vs {row.상대}</div>
+                    <div style="text-align: center; margin-top: 10px;">📍 {row.장소} | ⏰ {row.시간}</div>
+                    <div style="text-align: right; font-size: 0.8em; margin-top: 5px; opacity: 0.8;">{row.비고}</div>
+                </div>
+            """, unsafe_allow_html=True)
+
+# 5. 하단 전체 통계
+    st.divider()
+    st.subheader("📊 시즌 요약")
+    col_stat1, col_stat2, col_stat3 = st.columns(3)
+    col_stat1.metric("이번 달 경기 수", f"{len(filtered_df)}경기")
+    col_stat2.metric("홈 경기", f"{len(filtered_df[filtered_df['장소'] == '대구'])}경기")
+    col_stat3.metric("원정 경기", f"{len(filtered_df[filtered_df['장소'] != '대구'])}경기")
+
+
+
+
+
 
 elif menu == "원둘레 계산":
 
