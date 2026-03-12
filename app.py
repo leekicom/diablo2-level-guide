@@ -249,7 +249,27 @@ elif menu == "삼성 라이온즈 일정":
             card_color = "#0056b3" if is_home else "#ffffff" # 삼성 블루 vs 화이트
             text_color = "white" if is_home else "black"
             border = "none" if is_home else "1px solid #ddd"
+        # 현재 날짜 가져오기 (2026-03-12 기준)
+        today = datetime.now().strftime('%Y-%m-%d')
+
+        cols = st.columns(4)
+        for idx, row in enumerate(filtered_df.itertuples()):
+            with cols[idx % 4]:
+        # 날짜 비교 (데이터의 날짜와 오늘 날짜가 같은지 확인)
+                is_today = row.날짜.strftime('%Y-%m-%d') == today            
             
+            # 오늘이면 황금색, 아니면 기존 로직(홈/원정) 적용
+            if is_today:
+                card_color = "#FFD700"  # 황금색 (Gold)
+                text_color = "black"
+                border = "3px solid #FFA500" # 오렌지색 테두리로 강조
+                shadow = "0px 0px 20px rgba(255, 215, 0, 0.6)" # 반짝이는 광채 효과
+            else:
+                is_home = row.장소 == "대구"
+                card_color = "#0056b3" if is_home else "#ffffff"
+                text_color = "white" if is_home else "black"
+                border = "none" if is_home else "1px solid #ddd"
+                shadow = "2px 2px 10px rgba(0,0,0,0.1)"           
             st.markdown(f"""
                 <div style="background-color: {card_color}; color: {text_color}; padding: 20px; 
                             border-radius: 15px; border: {border}; margin-bottom: 20px;
@@ -261,41 +281,7 @@ elif menu == "삼성 라이온즈 일정":
                     <div style="text-align: right; font-size: 0.8em; margin-top: 5px; opacity: 0.8;">{row.비고}</div>
                 </div>
             """, unsafe_allow_html=True)
-# 현재 날짜 가져오기 (2026-03-12 기준)
-    today = datetime.now().strftime('%Y-%m-%d')
 
-    cols = st.columns(4)
-    for idx, row in enumerate(filtered_df.itertuples()):
-        with cols[idx % 4]:
-        # 날짜 비교 (데이터의 날짜와 오늘 날짜가 같은지 확인)
-            is_today = row.날짜.strftime('%Y-%m-%d') == today
-        
-        # 오늘이면 황금색, 아니면 기존 로직(홈/원정) 적용
-            if is_today:
-                card_color = "#FFD700"  # 황금색 (Gold)
-                text_color = "black"
-                border = "3px solid #FFA500" # 오렌지색 테두리로 강조
-                shadow = "0px 0px 20px rgba(255, 215, 0, 0.6)" # 반짝이는 광채 효과
-            else:
-                is_home = row.장소 == "대구"
-                card_color = "#0056b3" if is_home else "#ffffff"
-                text_color = "white" if is_home else "black"
-                border = "none" if is_home else "1px solid #ddd"
-                shadow = "2px 2px 10px rgba(0,0,0,0.1)"
-
-            st.markdown(f"""
-            <div style="background-color: {card_color}; color: {text_color}; padding: 20px; 
-                        border-radius: 15px; border: {border}; margin-bottom: 20px;
-                        box-shadow: {shadow}; height: 180px;">
-                <div style="font-size: 1.2em; font-weight: bold;">
-                    {row.날짜.strftime('%m.%d')} ({row.요일[:3]}) 
-                    {" 📢 TODAY" if is_today else ""}
-                </div>
-                <hr style="margin: 10px 0; border-color: {text_color}; opacity: 0.3;">
-                <div style="font-size: 1.5em; font-weight: 800; text-align: center;">vs {row.상대}</div>
-                <div style="text-align: center; margin-top: 10px;">📍 {row.장소} | ⏰ {row.시간}</div>
-            </div>
-            """, unsafe_allow_html=True)
 # 5. 하단 전체 통계
     st.divider()
     st.subheader("📊 시즌 요약")
