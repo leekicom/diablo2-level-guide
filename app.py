@@ -8,7 +8,7 @@ st.set_page_config(page_title="멀티 가이드 앱", page_icon="📱", layout="
 
 # 2. 사이드바 메뉴 만들기
 st.sidebar.title("🌟 메뉴 선택")
-menu = st.sidebar.radio("가고 싶은 페이지를 선택하세요", ["디아2 레벨 가이드", "삼성 라이온즈 일정","원둘레 계산"])
+menu = st.sidebar.radio("가고 싶은 페이지를 선택하세요", ["삼성 라이온즈 일정","디아2 레벨 가이드", "원둘레 계산"])
 
 # --- 페이지 1: 디아블로 2 가이드 ---
 if menu == "디아2 레벨 가이드":
