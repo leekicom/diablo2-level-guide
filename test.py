@@ -1,0 +1,2 @@
+ba="ttsd"
+print(ba)
