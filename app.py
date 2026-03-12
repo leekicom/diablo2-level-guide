@@ -245,13 +245,14 @@ elif menu == "삼성 라이온즈 일정":
     for idx, row in enumerate(filtered_df.itertuples()):
         with cols[idx % 4]:
             # 홈/원정 디자인 차별화
+                  # 현재 날짜 가져오기 (2026-03-12 기준)
+            today = datetime.now().strftime('%Y-%m-%d')
             is_today = row.날짜.strftime('%Y-%m-%d') == today
             is_home = row.장소 == "대구"
             card_color = "#0056b3" if is_home else "#ffffff" # 삼성 블루 vs 화이트
             text_color = "white" if is_home else "black"
             border = "none" if is_home else "1px solid #ddd"
-        # 현재 날짜 가져오기 (2026-03-12 기준)
-        today = datetime.now().strftime('%Y-%m-%d')
+  
 
         # 오늘이면 황금색, 아니면 기존 로직(홈/원정) 적용
         if is_today:
