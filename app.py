@@ -261,7 +261,7 @@ elif menu == "삼성 라이온즈 일정":
                     <div style="text-align: right; font-size: 0.8em; margin-top: 5px; opacity: 0.8;">{row.비고}</div>
                 </div>
             """, unsafe_allow_html=True)
-
+    today = datetime.now().strftime('%Y-%m-%d')
 # 5. 하단 전체 통계
     st.divider()
     st.subheader("📊 시즌 요약")
