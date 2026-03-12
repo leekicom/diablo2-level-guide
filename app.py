@@ -252,21 +252,19 @@ elif menu == "삼성 라이온즈 일정":
             card_color = "#0056b3" if is_home else "#ffffff" # 삼성 블루 vs 화이트
             text_color = "white" if is_home else "black"
             border = "none" if is_home else "1px solid #ddd"
-  
-
         # 오늘이면 황금색, 아니면 기존 로직(홈/원정) 적용
-        if is_today:
-            card_color = "#FFD700"  # 황금색 (Gold)
-            text_color = "black"
-            border = "3px solid #FFA500" # 오렌지색 테두리로 강조
-            shadow = "0px 0px 20px rgba(255, 215, 0, 0.6)" # 반짝이는 광채 효과
-        else:
-            is_home = row.장소 == "대구"
-            card_color = "#0056b3" if is_home else "#ffffff"
-            text_color = "white" if is_home else "black"
-            border = "none" if is_home else "1px solid #ddd"
-            shadow = "2px 2px 10px rgba(0,0,0,0.1)"           
-        st.markdown(f"""
+            if is_today:
+                card_color = "#FFD700"  # 황금색 (Gold)
+                text_color = "black"
+                border = "3px solid #FFA500" # 오렌지색 테두리로 강조
+                shadow = "0px 0px 20px rgba(255, 215, 0, 0.6)" # 반짝이는 광채 효과
+            else:
+                is_home = row.장소 == "대구"
+                card_color = "#0056b3" if is_home else "#ffffff"
+                text_color = "white" if is_home else "black"
+                border = "none" if is_home else "1px solid #ddd"
+                shadow = "2px 2px 10px rgba(0,0,0,0.1)"           
+            st.markdown(f"""
                 <div style="background-color: {card_color}; color: {text_color}; padding: 20px; 
                             border-radius: 15px; border: {border}; margin-bottom: 20px;
                             box-shadow: 2px 2px 10px rgba(0,0,0,0.1); height: 180px;">
