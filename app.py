@@ -1,5 +1,5 @@
 import streamlit as st
-
+import math
 # 1. 페이지 설정
 st.set_page_config(page_title="멀티 가이드 앱", page_icon="📱", layout="wide")
 
