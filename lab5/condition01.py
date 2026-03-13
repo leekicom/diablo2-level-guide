@@ -1,5 +1,6 @@
 # 입력을 받습니다.
 number = input("정수 입력> ")
+
 # 짝수 확인
 if int(number[-1])%2 == 0:
     print("짝수입니다")

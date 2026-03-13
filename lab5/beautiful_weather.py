@@ -3,7 +3,7 @@ from urllib import request
 from bs4 import BeautifulSoup
 
 # urlopen() 함수로 기상청의 전국 날씨를 읽습니다.
-target = request.urlopen("http://www.kma.go.kr/weather/forecast/mid-term-rss3.jsp?stnId=108")
+target = request.urlopen("https://www.kma.go.kr/wid/queryDFSRSS.jsp?zone=2715085000")
 
 # BeautifulSoup을 사용해 웹 페이지를 분석합니다.
 soup = BeautifulSoup(target, "html.parser")
